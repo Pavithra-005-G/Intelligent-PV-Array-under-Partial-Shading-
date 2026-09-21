@@ -65,7 +65,38 @@ Intelligent-PV-Array-Under-Partial-Shading/
 │
 └── Documentation/
     └── Project documentation
+
 ```
+## 📈 Key Simulation Findings
+
+| Condition | Maximum Power |
+|---|---:|
+| Ideal Condition | 15.08 W |
+| Partial Shading | 7.96 W |
+
+Under the studied partial-shading condition, the maximum available power decreased from **15.08 W to 7.96 W**, corresponding to an approximately **47.2% reduction** in maximum power.
+
+The partial-shading P–V characteristic also shows **multiple power peaks** due to non-uniform irradiance across the PV array. This demonstrates the challenge of extracting the global maximum power under partial-shading conditions.
+
+## Key Features
+
+- 3×3 photovoltaic (PV) array modeling
+- Ideal and partial-shading condition analysis
+- PV I–V and P–V characteristic analysis
+- Total Cross-Tied (TCT) configuration
+- Row-wise bypass diode modeling
+- Analysis of mismatch losses and multiple power peaks
+- Genetic Algorithm-based dynamic reconfiguration — **work in progress**
+
+## Future Work
+
+- Complete the Genetic Algorithm-based dynamic PV array reconfiguration.
+- Implement the switching matrix in Simulink.
+- Compare conventional and reconfigured PV array performance.
+- Evaluate mismatch reduction and power improvement.
+- Integrate the reconfiguration strategy with the complete PV system.
+
+
 
 ## Future Work
 
@@ -77,7 +108,7 @@ Intelligent-PV-Array-Under-Partial-Shading/
 
 
 
-## 📊 Project Results
+## Project Results
 
 ### Simulation Result 1
 
