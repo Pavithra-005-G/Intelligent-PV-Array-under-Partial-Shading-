@@ -79,12 +79,11 @@ Intelligent-PV-Array-Under-Partial-Shading/
 
 ### Simulation Result 1
 
-![Simulation Result 1](/picture1.png)
+![Simulation Result 1](picture%201.png)
 
 ### Simulation Result 2
 
-![Simulation Result 2](Results/picture2.png)
-
+![Simulation Result 2](picture%202.png)
 
 
 
