@@ -98,14 +98,6 @@ The partial-shading P–V characteristic also shows **multiple power peaks** due
 
 
 
-## Future Work
-
-* Complete GA-based dynamic PV array reconfiguration.
-* Implement the switching matrix in Simulink.
-* Compare conventional and reconfigured PV array performance.
-* Evaluate mismatch reduction and power improvement.
-* Integrate the control approach with the overall PV system.
-
 
 
 ## Project Results
