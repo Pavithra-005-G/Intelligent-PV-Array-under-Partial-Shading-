@@ -75,6 +75,22 @@ Intelligent-PV-Array-Under-Partial-Shading/
 * Evaluate mismatch reduction and power improvement.
 * Integrate the control approach with the overall PV system.
 
+## Simulation Results
+
+### PV Array Model
+
+![PV Array Simulink Model](Results/PV_Array_Simulink_Model.png)
+
+### Partial Shading Condition
+
+![Partial Shading Condition](Results/Partial_Shading_Condition.png)
+
+### P–V Characteristics
+
+![P–V Curve](Results/PV_PV_Curve_Partial_Shading.png)
+
+
+
 ## Author
 
 **G.Pavithra**
