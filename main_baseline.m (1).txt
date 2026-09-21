@@ -1,0 +1,62 @@
+%% Step 1: Panel datasheet parameters
+Voc_stc  = 6.5;    % V
+Isc_stc  = 0.35;   % A
+Vmpp_stc = 5.5;    % V
+Impp_stc = 0.30;   % A
+
+%% Steps 3-6: Shaded (baseline) case, via simulateArray function
+G_shaded = [1000 800 600; 800 600 400; 600 400 200];
+[Pmax_shaded, Vmpp_shaded, Impp_shaded, CVI_shaded, V_shaded, I_shaded] = ...
+    simulateArray(G_shaded, Voc_stc, Isc_stc, Vmpp_stc, Impp_stc);
+
+fprintf('--- Baseline Array Performance (No GA) ---\n');
+fprintf('Pmax  = %.2f W\n', Pmax_shaded);
+fprintf('Vmpp  = %.2f V\n', Vmpp_shaded);
+fprintf('Impp  = %.2f A\n', Impp_shaded);
+fprintf('CVI (baseline, fixed arrangement) = %.4f\n', CVI_shaded);
+
+%% Step 7: Plot P-V curve for the PARTIAL SHADING case, with MPP marked
+P_shaded = V_shaded .* I_shaded;
+figure;
+plot(V_shaded, P_shaded, 'LineWidth', 2); hold on;
+plot(Vmpp_shaded, Pmax_shaded, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+xlabel('Array Voltage (V)');
+ylabel('Array Power (W)');
+title('Array P-V Curve Under Partial Shading (Baseline, No GA)');
+legend('P-V curve (shaded)', sprintf('MPP = %.2f W', Pmax_shaded));
+grid on;
+
+%% Step 8: No-shading reference case
+G_uniform = 1000 * ones(3,3);
+[Pmax_ref, Vmpp_ref, Impp_ref, CVI_ref, V_ref, I_ref] = ...
+    simulateArray(G_uniform, Voc_stc, Isc_stc, Vmpp_stc, Impp_stc);
+
+%% Step 9: Combined comparison plot - shaded vs uniform, on the same axes
+P_ref = V_ref .* I_ref;
+
+figure;
+plot(V_shaded, P_shaded, 'LineWidth', 2, 'Color', [0.85 0.33 0.10]); hold on;
+plot(V_ref, P_ref, 'LineWidth', 2, 'Color', [0.00 0.45 0.74]);
+plot(Vmpp_shaded, Pmax_shaded, 'o', 'MarkerSize', 8, ...
+    'MarkerFaceColor', [0.85 0.33 0.10], 'MarkerEdgeColor', 'k');
+plot(Vmpp_ref, Pmax_ref, 'o', 'MarkerSize', 8, ...
+    'MarkerFaceColor', [0.00 0.45 0.74], 'MarkerEdgeColor', 'k');
+xlabel('Array Voltage (V)');
+ylabel('Array Power (W)');
+title('P-V Curve Comparison: Partial Shading vs Ideal (No Shading)');
+legend('Partial shading', 'No shading (ideal)', ...
+    sprintf('MPP shaded = %.2f W', Pmax_shaded), ...
+    sprintf('MPP ideal = %.2f W', Pmax_ref), ...
+    'Location', 'best');
+grid on;
+
+%% Comparison summary (Command Window)
+powerLoss = Pmax_ref - Pmax_shaded;
+percentLoss = (powerLoss / Pmax_ref) * 100;
+
+fprintf('\n--- Comparison: Shaded vs Uniform ---\n');
+fprintf('Pmax (no shading)        = %.2f W\n', Pmax_ref);
+fprintf('Pmax (baseline, shaded)  = %.2f W\n', Pmax_shaded);
+fprintf('Power lost to shading    = %.2f W (%.1f%%)\n', powerLoss, percentLoss);
+fprintf('CVI (uniform, ideal)     = %.4f\n', CVI_ref);
+fprintf('CVI (baseline, shaded)   = %.4f\n', CVI_shaded);

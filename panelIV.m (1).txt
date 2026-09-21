@@ -1,0 +1,27 @@
+function [I, V] = panelIV(G, Voc_stc, Isc_stc, Vmpp_stc, Impp_stc)
+% panelIV: returns I-V curve for one panel at irradiance G
+% G          : irradiance on this panel (W/m^2)
+% Voc_stc    : open circuit voltage at STC (V)
+% Isc_stc    : short circuit current at STC (A)
+% Vmpp_stc   : voltage at MPP, STC (V)
+% Impp_stc   : current at MPP, STC (A)
+
+    % Step 1: scale current-related quantities with irradiance
+    Isc  = Isc_stc  * (G / 1000);
+    Impp = Impp_stc * (G / 1000);
+    Voc  = Voc_stc;      % held constant (no temp effects yet)
+    Vmpp = Vmpp_stc;     % held constant
+
+    % Step 2: solve for shape constants C1, C2
+    C2 = (Vmpp/Voc - 1) / log(1 - Impp/Isc);
+    C1 = (1 - Impp/Isc) * exp(-Vmpp / (C2 * Voc));
+
+    % Step 3: generate voltage sweep from 0 to Voc
+    V = linspace(0, Voc, 200);
+
+    % Step 4: compute corresponding current for each voltage
+    I = Isc * (1 - C1 * (exp(V ./ (C2 * Voc)) - 1));
+
+    % Step 5: clip any negative currents to zero (physical limit)
+    I(I < 0) = 0;
+end

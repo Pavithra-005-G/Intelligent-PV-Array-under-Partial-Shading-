@@ -1,0 +1,74 @@
+function [Pmax, Vmpp, Impp, CVI, V_array, I_array] = simulateArray(G, Voc_stc, Isc_stc, Vmpp_stc, Impp_stc)
+% simulateArray: TCT array simulation WITH bypass diodes per row.
+% Produces the realistic multi-peak P-V curve seen under partial shading,
+% and the curve now correctly extends down to V = 0.
+
+    Vd_bypass = 0.6;   % bypass diode forward voltage drop (V)
+
+    [rows, cols] = size(G);
+    numPanels = rows * cols;
+
+    % Step 3: individual panel I-V curves
+    V_all = zeros(numPanels, 200);
+    I_all = zeros(numPanels, 200);
+    panelIdx = 1;
+    for i = 1:rows
+        for j = 1:cols
+            [I_curve, V_curve] = panelIV(G(i,j), Voc_stc, Isc_stc, Vmpp_stc, Impp_stc);
+            I_all(panelIdx, :) = I_curve;
+            V_all(panelIdx, :) = V_curve;
+            panelIdx = panelIdx + 1;
+        end
+    end
+
+    % Step 4: TCT - sum currents within each row (parallel)
+    I_row = zeros(rows, 200);
+    V_row = V_all(1,:);
+    panelIdx = 1;
+    for i = 1:rows
+        rowCurrentSum = zeros(1, 200);
+        for j = 1:cols
+            rowCurrentSum = rowCurrentSum + I_all(panelIdx, :);
+            panelIdx = panelIdx + 1;
+        end
+        I_row(i, :) = rowCurrentSum;
+    end
+
+    rowMaxCurrent = max(I_row, [], 2);   % each row's own max current
+
+    % Step 5: series combination WITH bypass diodes
+    % Current now sweeps up to the STRONGEST row's max current,
+    % since weak rows get bypassed once their limit is exceeded.
+    I_total_max = max(rowMaxCurrent);
+    I_common = linspace(0, I_total_max, 400);
+
+    V_array_total = zeros(1, 400);
+    for i = 1:rows
+        V_this_row = zeros(1, 400);
+        for k = 1:length(I_common)
+            Ik = I_common(k);
+            if Ik <= rowMaxCurrent(i)
+                V_this_row(k) = interp1(I_row(i,:), V_row, Ik, 'linear', 'extrap');
+            else
+                % Row exceeded its own limit -> bypass diode conducts
+                V_this_row(k) = -Vd_bypass;
+            end
+        end
+        V_array_total = V_array_total + V_this_row;
+    end
+
+    V_array_total(V_array_total < 0) = 0;  % array voltage can't go negative
+
+    I_array = I_common;
+    V_array = V_array_total;
+
+    % Step 6: performance metrics (still finds the GLOBAL peak,
+    % even with multiple local peaks present)
+    P_array = V_array .* I_array;
+    [Pmax, idxMPP] = max(P_array);
+    Vmpp = V_array(idxMPP);
+    Impp = I_array(idxMPP);
+
+    meanRowCurrent = mean(rowMaxCurrent);
+    CVI = sqrt(mean((rowMaxCurrent - meanRowCurrent).^2)) / meanRowCurrent;
+end
