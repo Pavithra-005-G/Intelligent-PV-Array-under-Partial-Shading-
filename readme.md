@@ -83,7 +83,8 @@ Intelligent-PV-Array-Under-Partial-Shading/
 
 ### Partial Shading Condition
 
-![Partial Shading Condition](Results/Picture2.png)
+[Partial Shading Condition](Results/Picture2.png)
+
 
 
 
