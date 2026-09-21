@@ -79,15 +79,12 @@ Intelligent-PV-Array-Under-Partial-Shading/
 
 ### PV Array Model
 
-![PV Array Simulink Model](Results/PV_Array_Simulink_Model.png)
+![PV Array Simulink Model](Results/Picture1.png)
 
 ### Partial Shading Condition
 
-![Partial Shading Condition](Results/Partial_Shading_Condition.png)
+![Partial Shading Condition](Picture2.png)
 
-### P–V Characteristics
-
-![P–V Curve](Results/PV_PV_Curve_Partial_Shading.png)
 
 
 
